@@ -1,0 +1,55 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  spell_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Install codespell
+        run: |
+          pip install codespell
+          codespell --skip=".git,./static/*,poetry.lock,pyproject.toml"
+        continue-on-error: false
+
+  black_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Install black
+        run: |
+          pip install black
+          black . --check --exclude "^.*\b(migrations)\b.*$"
+        continue-on-error: false
+
+  pydoc_check:
+    needs: [black_check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: pydoc-numpy-docstring
+        id: docstring
+        run: |
+          pip3 install pydocstyle
+          pydocstyle .
+        continue-on-error: false
+
+  password_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out HEAD
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Check for  password
+        uses: AlicanAkkus/pinder-action@0.1

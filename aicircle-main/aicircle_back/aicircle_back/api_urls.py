@@ -1,0 +1,18 @@
+# Third Party Stuff
+from rest_framework.routers import SimpleRouter
+from django.urls import path, include
+
+from .views import HealthViewSet
+
+default_router = SimpleRouter(trailing_slash=False)
+default_router.register(r"", HealthViewSet, basename="health")
+
+# Combine urls from both default and singleton routers and expose as
+# 'urlpatterns' which django can pick up from this module.
+urlpatterns = default_router.urls
+
+urlpatterns += [
+    # Register all your urls here
+    path("auth/", include("users.urls"), name="users"),
+    path("orgs/", include("organizations.urls"), name="organizations"),
+]

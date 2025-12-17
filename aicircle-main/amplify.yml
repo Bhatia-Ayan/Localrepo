@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd aicircle_front
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: aicircle_front/dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - aicircle_front/node_modules/**/*
